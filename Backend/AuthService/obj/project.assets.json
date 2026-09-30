@@ -3663,24 +3663,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ukumarsi\\.nuget\\packages\\": {}
+    "C:\\Users\\UTKAR\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\AuthService\\AuthService.csproj",
+      "projectUniqueName": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
       "projectName": "AuthService",
-      "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\AuthService\\AuthService.csproj",
-      "packagesPath": "C:\\Users\\ukumarsi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\AuthService\\obj\\",
+      "projectPath": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
+      "packagesPath": "C:\\Users\\UTKAR\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\ukumarsi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\UTKAR\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
