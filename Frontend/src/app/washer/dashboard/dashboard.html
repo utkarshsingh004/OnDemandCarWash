@@ -1,21 +1,78 @@
-<div class="dashboard">
-
-  <h1>Washer Dashboard</h1>
-
-  <p>Welcome to Green Car Wash</p>
-
-  <div class="dashboard-cards">
-
-    <div class="card">
-      <h3>Pending Bookings</h3>
-      <p>View new wash requests</p>
+<div class="workspace-shell">
+  <aside class="workspace-sidebar">
+    <a class="workspace-brand" routerLink="/washer"><span class="brand-mark">G</span> GreenWash</a>
+    <p class="nav-caption">WASHER SPACE</p>
+    <nav class="workspace-nav" aria-label="Washer navigation">
+      <button [class.active]="activeSection === 'Overview'" (click)="setSection('Overview')"><span>◫</span> Overview</button>
+      <button [class.active]="activeSection === 'Requests'" (click)="setSection('Requests')"><span>▦</span> New requests <small>{{ pendingBookings.length }}</small></button>
+      <button [class.active]="activeSection === 'My washes'" (click)="setSection('My washes')"><span>✳</span> My washes <small>{{ assignedBookings.length }}</small></button>
+      <button [class.active]="activeSection === 'Profile'" (click)="setSection('Profile')"><span>♙</span> Profile</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip"><span class="user-avatar coral-avatar">{{ washerName.slice(0, 1).toUpperCase() }}</span><div><strong>{{ washerName }}</strong><small>Washer</small></div></div>
+      <button class="logout-button" (click)="logout()">↪ <span>Sign out</span></button>
     </div>
+  </aside>
 
-    <div class="card">
-      <h3>Accepted Bookings</h3>
-      <p>View your assigned bookings</p>
-    </div>
+  <main class="workspace-main">
+    <header class="workspace-header">
+      <div><p class="eyebrow">WASHER PORTAL</p><h1>{{ activeSection }}</h1></div>
+      <div class="availability-control"><span class="availability-dot" [class.available]="isAvailable"></span><span>{{ isAvailable ? 'Available' : 'Unavailable' }}</span><button [class.on]="isAvailable" (click)="updateAvailability(!isAvailable)" [attr.aria-label]="isAvailable ? 'Set unavailable' : 'Set available'" [attr.title]="isAvailable ? 'Set unavailable' : 'Set available'"><i></i></button></div>
+    </header>
 
-  </div>
+    @if (errorMessage) { <p class="workspace-feedback error" role="alert">{{ errorMessage }}</p> }
+    @if (successMessage) { <p class="workspace-feedback success" role="status">{{ successMessage }}</p> }
 
+    @if (activeSection === 'Overview') {
+      <section class="welcome-band washer-welcome"><div><p class="eyebrow">YOUR WORKSPACE</p><h2>Good day, {{ washerName.split(' ')[0] }}.</h2><p>Stay ready for local wash requests and manage your day.</p></div><span class="welcome-art" aria-hidden="true">✳</span></section>
+      <section class="metric-grid">
+        <article class="metric-card"><span class="metric-icon coral-icon">▦</span><div><span>New requests</span><strong>{{ pendingBookings.length }}</strong></div><button (click)="setSection('Requests')">Review queue →</button></article>
+        <article class="metric-card"><span class="metric-icon green-icon">✳</span><div><span>Assigned washes</span><strong>{{ assignedBookings.length }}</strong></div><button (click)="setSection('My washes')">View assignments →</button></article>
+        <article class="metric-card"><span class="metric-icon amber-icon">◉</span><div><span>Availability</span><strong class="availability-text">{{ isAvailable ? 'On' : 'Off' }}</strong></div><button (click)="updateAvailability(!isAvailable)">{{ isAvailable ? 'Pause requests' : 'Accept requests' }} →</button></article>
+      </section>
+      <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">NEXT UP</p><h2>Incoming requests</h2></div><button class="text-action" (click)="setSection('Requests')">Open queue →</button></div>
+        @if (pendingBookings.length) {
+          <div class="request-list">@for (booking of pendingBookings.slice(0, 3); track booking.bookingId) { <article class="request-row"><span class="request-symbol">✳</span><div class="row-main"><strong>{{ serviceLabel(booking.serviceType) }}</strong><small>{{ booking.bookingDate | date:'medium' }} · {{ booking.isScheduled ? 'Scheduled' : 'As soon as possible' }}</small></div><span class="request-price">{{ booking.price | currency }}</span><button class="secondary-button compact" (click)="setSection('Requests')">Review</button></article> }</div>
+        } @else { <div class="empty-state compact-empty"><span>▦</span><strong>No new requests</strong><p>New wash requests will appear here.</p></div> }
+      </section>
+    }
+
+    @if (activeSection === 'Requests') {
+      <section class="section-heading"><div><p class="eyebrow">BOOKING QUEUE</p><h2>New requests</h2><p>Review each request and accept or decline.</p></div><button class="secondary-button" (click)="loadDashboard()">↻ Refresh</button></section>
+      <section class="request-list request-page-list">
+        @if (pendingBookings.length) {
+          @for (booking of pendingBookings; track booking.bookingId) {
+            <article class="request-card"><div class="request-card-top"><span class="request-symbol">✳</span><span class="status-pill pending">Pending</span></div><p class="eyebrow">{{ booking.isScheduled ? 'SCHEDULED WASH' : 'AS SOON AS POSSIBLE' }}</p><h2>{{ serviceLabel(booking.serviceType) }}</h2><div class="request-facts"><div><small>Requested for</small><strong>{{ booking.bookingDate | date:'fullDate' }}</strong><span>{{ booking.bookingDate | date:'shortTime' }}</span></div><div><small>Estimated price</small><strong>{{ booking.price | currency }}</strong><span>Booking {{ booking.bookingId.slice(0, 8) }}</span></div></div><div class="request-actions"><button class="secondary-button decline-button" [disabled]="busyBookingId === booking.bookingId" (click)="respond(booking, false)">Decline</button><button class="primary-button" [disabled]="busyBookingId === booking.bookingId" (click)="respond(booking, true)">{{ busyBookingId === booking.bookingId ? 'Updating...' : 'Accept request' }} <span>→</span></button></div></article>
+          }
+        } @else { <div class="panel"><div class="empty-state"><span>▦</span><strong>Queue is clear</strong><p>There are no pending wash requests right now.</p></div></div> }
+      </section>
+    }
+
+    @if (activeSection === 'My washes') {
+      <section class="section-heading"><div><p class="eyebrow">YOUR ASSIGNMENTS</p><h2>My washes</h2><p>Accepted bookings assigned to your account.</p></div><button class="secondary-button" (click)="loadDashboard()">↻ Refresh</button></section>
+      <section class="panel">
+        @if (assignedBookings.length) {
+          <div class="table-wrap"><table><thead><tr><th>Service</th><th>Scheduled for</th><th>Status</th><th>Price</th><th>Booking</th><th></th></tr></thead><tbody>
+            @for (booking of assignedBookings; track booking.bookingId) { <tr><td><strong>{{ serviceLabel(booking.serviceType) }}</strong><small>{{ booking.isScheduled ? 'Scheduled' : 'On demand' }}</small></td><td>{{ booking.bookingDate | date:'medium' }}</td><td><span class="status-pill" [class]="'status-pill ' + statusClass(booking.status)">{{ booking.status }}</span></td><td>{{ booking.price | currency:'INR' }}</td><td><small>{{ booking.bookingId.slice(0, 8) }}</small></td><td>@if (booking.status === 'Accepted') { <button class="text-action" [disabled]="busyBookingId === booking.bookingId" (click)="updateBookingStatus(booking, 'InProgress')">Start wash</button> } @else if (booking.status === 'InProgress') { <button class="text-action" [disabled]="busyBookingId === booking.bookingId" (click)="updateBookingStatus(booking, 'Completed')">Complete</button> }</td></tr> }
+          </tbody></table></div>
+        } @else { <div class="empty-state"><span>✳</span><strong>No assigned washes yet</strong><p>Accepted work will appear here.</p><button class="text-action" (click)="setSection('Requests')">Review new requests →</button></div> }
+      </section>
+    }
+
+    @if (activeSection === 'Profile') {
+      <section class="section-heading"><div><p class="eyebrow">ACCOUNT SETTINGS</p><h2>Your profile</h2><p>Update the contact details associated with your washer account.</p></div></section>
+      <section class="panel form-panel profile-panel">
+        <form (ngSubmit)="saveProfile()">
+          <div class="form-grid">
+            <label class="field">Full name<input name="profileName" [(ngModel)]="profileForm.name" required maxlength="100"></label>
+            <label class="field">Email address<input name="profileEmail" type="email" [(ngModel)]="profileForm.email" required email></label>
+            <label class="field">Phone<input name="profilePhone" type="tel" [(ngModel)]="profileForm.phone" required></label>
+            <label class="field">Address<input name="profileAddress" [(ngModel)]="profileForm.address" required maxlength="250"></label>
+          </div>
+          <button class="primary-button" type="submit" [disabled]="isSavingProfile">{{ isSavingProfile ? 'Saving...' : 'Save profile' }} <span>→</span></button>
+        </form>
+      </section>
+    }
+  </main>
 </div>

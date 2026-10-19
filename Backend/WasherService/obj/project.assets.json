@@ -3603,11 +3603,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\WasherService\\WasherService.csproj",
+      "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\WasherService\\WasherService.csproj",
       "projectName": "WasherService",
-      "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\WasherService\\WasherService.csproj",
+      "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\WasherService\\WasherService.csproj",
       "packagesPath": "C:\\Users\\ukumarsi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\WasherService\\obj\\",
+      "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\WasherService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ukumarsi\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -3688,7 +3688,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.402/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
@@ -4105,5 +4105,27 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-2fmv-rv2c-59x7",
+      "libraryId": "System.Security.Cryptography.Pkcs",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Security.Cryptography.Pkcs' 9.0.4 has a known high severity vulnerability, https://github.com/advisories/GHSA-846f-f764-76mx",
+      "libraryId": "System.Security.Cryptography.Pkcs",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }

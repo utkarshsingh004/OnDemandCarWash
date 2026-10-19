@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\NotificationService\\NotificationService.csproj": {}
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\NotificationService\\NotificationService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\NotificationService\\NotificationService.csproj": {
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\NotificationService\\NotificationService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\NotificationService\\NotificationService.csproj",
+        "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\NotificationService\\NotificationService.csproj",
         "projectName": "NotificationService",
-        "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\NotificationService\\NotificationService.csproj",
+        "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\NotificationService\\NotificationService.csproj",
         "packagesPath": "C:\\Users\\ukumarsi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\NotificationService\\obj\\",
+        "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\NotificationService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ukumarsi\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -78,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.402/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

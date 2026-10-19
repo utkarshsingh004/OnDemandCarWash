@@ -6,8 +6,6 @@ namespace NotificationService.Services
             string toEmail,
             string customerName,
             string bookingId,
-            string carName,
-            string registrationNumber,
             string serviceType,
             decimal amount);
     }

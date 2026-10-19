@@ -1,5 +1,6 @@
 using NotificationService.Services;
 using NotificationService.Models;
+using NotificationService.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
+builder.Services.AddHttpClient("CustomerService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["CustomerService:BaseUrl"] ??
+        "http://localhost:5180/");
+});
+
+builder.Services.AddSingleton<CustomerApiClient>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddSingleton<
@@ -29,7 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 

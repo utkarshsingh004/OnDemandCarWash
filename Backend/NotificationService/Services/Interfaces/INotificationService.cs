@@ -5,7 +5,7 @@ namespace NotificationService.Services
 {
     public interface INotificationService
     {
-        Task<Notification> CreateAsync(
+        Task<NotificationDeliveryResult> CreateAsync(
             CreateNotificationDto dto);
 
         Task<List<Notification>> GetByCustomerIdAsync(

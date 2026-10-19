@@ -1,26 +1,76 @@
-<div class="dashboard">
-
-  <h1>Admin Dashboard</h1>
-
-  <p>Green Car Wash Administration</p>
-
-  <div class="dashboard-cards">
-
-    <div class="card">
-      <h3>Customers</h3>
-      <p>Manage customers</p>
+<div class="workspace-shell admin-shell">
+  <aside class="workspace-sidebar">
+    <a class="workspace-brand" routerLink="/admin"><span class="brand-mark">G</span> GreenWash</a>
+    <p class="nav-caption">OPERATIONS</p>
+    <nav class="workspace-nav" aria-label="Administration navigation">
+      <button [class.active]="activeSection === 'Overview'" (click)="setSection('Overview')"><span>◫</span> Overview</button>
+      <button [class.active]="activeSection === 'Customers'" (click)="setSection('Customers')"><span>♙</span> Customers <small>{{ customers.length }}</small></button>
+      <button [class.active]="activeSection === 'Washers'" (click)="setSection('Washers')"><span>✳</span> Washers <small>{{ washers.length }}</small></button>
+      <button [class.active]="activeSection === 'Bookings'" (click)="setSection('Bookings')"><span>▦</span> Bookings <small>{{ bookings.length }}</small></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip"><span class="user-avatar admin-avatar">A</span><div><strong>{{ adminName }}</strong><small>Administrator</small></div></div>
+      <button class="logout-button" (click)="logout()">↪ <span>Sign out</span></button>
     </div>
+  </aside>
 
-    <div class="card">
-      <h3>Washers</h3>
-      <p>Manage washers</p>
-    </div>
+  <main class="workspace-main">
+    <header class="workspace-header">
+      <div><p class="eyebrow">OPERATIONS CONSOLE</p><h1>{{ activeSection }}</h1></div>
+      @if (activeSection !== 'Overview') { <label class="search-field"><span>⌕</span><input name="searchTerm" [(ngModel)]="searchTerm" placeholder="Search {{ activeSection.toLowerCase() }}"></label> }
+    </header>
+    @if (errorMessage) { <p class="workspace-feedback error" role="alert">{{ errorMessage }}</p> }
+    @if (successMessage) { <p class="workspace-feedback success" role="status">{{ successMessage }}</p> }
 
-    <div class="card">
-      <h3>Bookings</h3>
-      <p>Manage bookings</p>
-    </div>
+    @if (activeSection === 'Overview') {
+      <section class="welcome-band admin-welcome"><div><p class="eyebrow">GREENWASH OPERATIONS</p><h2>Service at a glance.</h2><p>Monitor the network and keep daily operations moving.</p></div><span class="welcome-art" aria-hidden="true">◫</span></section>
+      <section class="metric-grid">
+        <article class="metric-card"><span class="metric-icon green-icon">♙</span><div><span>Customers</span><strong>{{ customers.length }}</strong></div><button (click)="setSection('Customers')">Manage customers →</button></article>
+        <article class="metric-card"><span class="metric-icon coral-icon">✳</span><div><span>Washers</span><strong>{{ washers.length }}</strong></div><button (click)="setSection('Washers')">Manage washers →</button></article>
+        <article class="metric-card"><span class="metric-icon amber-icon">▦</span><div><span>Total bookings</span><strong>{{ bookings.length }}</strong></div><button (click)="setSection('Bookings')">Review bookings →</button></article>
+      </section>
+      <section class="content-columns">
+        <article class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">LATEST REQUESTS</p><h2>Recent bookings</h2></div><button class="text-action" (click)="setSection('Bookings')">See all →</button></div>
+          @if (bookings.length) {
+            <div class="booking-list">@for (booking of bookings.slice(0, 5); track booking.bookingId) { <div class="booking-row"><span class="row-marker">▦</span><div class="row-main"><strong>{{ serviceLabel(booking.serviceType) }}</strong><small>{{ booking.bookingDate | date:'medium' }}</small></div><span class="status-pill" [class]="'status-pill ' + statusClass(booking.status)">{{ booking.status }}</span></div> }</div>
+          } @else { <div class="empty-state compact-empty"><span>▦</span><strong>No bookings found</strong><p>New platform activity will appear here.</p></div> }
+        </article>
+        <article class="panel roster-panel"><div class="panel-heading"><div><p class="eyebrow">WASHER NETWORK</p><h2>Availability</h2></div><button class="text-action" (click)="setSection('Washers')">View team →</button></div><div class="availability-summary"><strong>{{ washers.filter(washer => washer.isAvailable).length }}</strong><span>available now</span><div class="availability-track"><i [style.width.%]="washers.length ? washers.filter(washer => washer.isAvailable).length / washers.length * 100 : 0"></i></div><small>{{ washers.length }} registered washers</small></div></article>
+      </section>
+    }
 
-  </div>
+    @if (activeSection === 'Customers') {
+      <section class="section-heading"><div><p class="eyebrow">CUSTOMER DIRECTORY</p><h2>Customers</h2><p>Registered customer accounts.</p></div><button class="secondary-button" (click)="loadDashboard()">↻ Refresh</button></section>
+      <section class="panel">
+        @if (filteredCustomers.length) {
+          <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Address</th><th></th></tr></thead><tbody>
+            @for (customer of filteredCustomers; track customer.customerId) { <tr><td><strong>{{ customer.name }}</strong><small>{{ customer.email }}</small></td><td>{{ customer.phone }}</td><td>{{ customer.address }}</td><td><button class="text-action danger-text" (click)="removeCustomer(customer)">Remove</button></td></tr> }
+          </tbody></table></div>
+        } @else { <div class="empty-state"><span>♙</span><strong>No matching customers</strong><p>Try a different search.</p></div> }
+      </section>
+    }
 
+    @if (activeSection === 'Washers') {
+      <section class="section-heading"><div><p class="eyebrow">WASHER DIRECTORY</p><h2>Washers</h2><p>Registered service professionals and their current availability.</p></div><button class="secondary-button" (click)="loadDashboard()">↻ Refresh</button></section>
+      <section class="panel">
+        @if (filteredWashers.length) {
+          <div class="table-wrap"><table><thead><tr><th>Washer</th><th>Phone</th><th>Address</th><th>Availability</th><th></th></tr></thead><tbody>
+            @for (washer of filteredWashers; track washer.washerId) { <tr><td><strong>{{ washer.name }}</strong><small>{{ washer.email }}</small></td><td>{{ washer.phone }}</td><td>{{ washer.address }}</td><td><span class="availability-label"><i [class.available]="washer.isAvailable"></i>{{ washer.isAvailable ? 'Available' : 'Unavailable' }}</span></td><td><button class="text-action danger-text" (click)="removeWasher(washer)">Remove</button></td></tr> }
+          </tbody></table></div>
+        } @else { <div class="empty-state"><span>✳</span><strong>No matching washers</strong><p>Try a different search.</p></div> }
+      </section>
+    }
+
+    @if (activeSection === 'Bookings') {
+      <section class="section-heading"><div><p class="eyebrow">PLATFORM ACTIVITY</p><h2>Bookings</h2><p>All wash requests across GreenWash.</p></div><button class="secondary-button" (click)="loadDashboard()">↻ Refresh</button></section>
+      <section class="panel">
+        @if (filteredBookings.length) {
+          <div class="table-wrap"><table><thead><tr><th>Booking</th><th>Service</th><th>Date</th><th>Status</th><th>Washer</th><th>Price</th></tr></thead><tbody>
+            @for (booking of filteredBookings; track booking.bookingId) { <tr><td><strong>{{ booking.bookingId.slice(0, 8) }}</strong><small>Car {{ booking.carId.slice(0, 8) }}</small></td><td>{{ serviceLabel(booking.serviceType) }}</td><td>{{ booking.bookingDate | date:'medium' }}</td><td><span class="status-pill" [class]="'status-pill ' + statusClass(booking.status)">{{ booking.status }}</span></td><td>{{ booking.washerId ? booking.washerId.slice(0, 8) : 'Unassigned' }}</td><td>{{ booking.price | currency:'INR' }}</td></tr> }
+          </tbody></table></div>
+        } @else { <div class="empty-state"><span>▦</span><strong>No matching bookings</strong><p>Try a different search.</p></div> }
+      </section>
+    }
+  </main>
 </div>

@@ -1,4 +1,5 @@
 using BookingService.DTOs;
+using BookingService.Clients;
 using BookingService.Models;
 
 namespace BookingService.Services
@@ -8,6 +9,7 @@ namespace BookingService.Services
         Task<List<Booking>> GetAllAsync();
         Task<Booking?> GetByIdAsync(Guid id);
         Task<List<Booking>> GetByCustomerIdAsync(Guid customerId);
+        Task<List<Booking>> GetByWasherIdAsync(Guid washerId);
         Task<List<Booking>> GetPendingBookingsAsync();
 
         Task<Booking> CreateAsync(
@@ -19,7 +21,7 @@ namespace BookingService.Services
             Guid customerId,
             CreateBookingDto dto);
 
-        Task DeleteAsync(
+        Task CancelAsync(
             Guid id,
             Guid customerId);
 
@@ -27,5 +29,14 @@ namespace BookingService.Services
             Guid bookingId,
             Guid washerId,
             bool accept);
+
+        Task<NotificationDeliveryResponse> ResendAcceptedNotificationAsync(
+            Guid bookingId,
+            Guid customerId);
+
+        Task UpdateStatusAsync(
+            Guid bookingId,
+            Guid washerId,
+            string status);
     }
 }

@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj": {}
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj": {
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
+        "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
         "projectName": "AuthService",
-        "projectPath": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
-        "packagesPath": "C:\\Users\\UTKAR\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\UTKAR\\OneDrive\\Desktop\\OnDemandCarWash\\Backend\\AuthService\\obj\\",
+        "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\AuthService\\AuthService.csproj",
+        "packagesPath": "C:\\Users\\ukumarsi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\AuthService\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\UTKAR\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ukumarsi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -105,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.402/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

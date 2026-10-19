@@ -38,6 +38,7 @@ namespace WasherService.Controllers
 
         // GET: api/Washer/all
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             var washers = await _washerService.GetAllAsync();
@@ -47,11 +48,55 @@ namespace WasherService.Controllers
 
         // GET: api/Washer/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Washer")]
         public async Task<IActionResult> GetById(Guid id)
         {
+            if (!User.IsInRole("Admin") && id != GetWasherIdFromToken())
+                return Forbid();
+
             var washer = await _washerService.GetByIdAsync(id);
 
-            return Ok(washer);
+            if (washer == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                washer.WasherId,
+                washer.Name,
+                washer.Email,
+                washer.Phone,
+                washer.Address,
+                washer.IsAvailable
+            });
+        }
+
+        [HttpGet("profile")]
+        [Authorize(Roles = "Washer")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var washer = await _washerService.GetByIdAsync(GetWasherIdFromToken());
+            if (washer == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                washer.WasherId,
+                washer.Name,
+                washer.Email,
+                washer.Phone,
+                washer.Address,
+                washer.IsAvailable
+            });
+        }
+
+        [HttpPut("profile")]
+        [Authorize(Roles = "Washer")]
+        public async Task<IActionResult> UpdateProfile(UpdateWasherProfileDto dto)
+        {
+            await _washerService.UpdateProfileAsync(
+                GetWasherIdFromToken(),
+                dto);
+            return NoContent();
         }
 
         // POST: api/Washer/register
@@ -94,6 +139,7 @@ namespace WasherService.Controllers
 
         // PUT: api/Washer/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(
             Guid id,
             UpdateWasherDto dto)
@@ -140,6 +186,7 @@ namespace WasherService.Controllers
 
         // DELETE: api/Washer/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _washerService.DeleteAsync(id);

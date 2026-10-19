@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\ApiGateway\\ApiGateway.csproj": {}
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\ApiGateway\\ApiGateway.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\ApiGateway\\ApiGateway.csproj": {
+    "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\ApiGateway\\ApiGateway.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\ApiGateway\\ApiGateway.csproj",
+        "projectUniqueName": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\ApiGateway\\ApiGateway.csproj",
         "projectName": "ApiGateway",
-        "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\ApiGateway\\ApiGateway.csproj",
+        "projectPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\ApiGateway\\ApiGateway.csproj",
         "packagesPath": "C:\\Users\\ukumarsi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\My Project\\My-Project\\Backend\\ApiGateway\\obj\\",
+        "outputPath": "C:\\Users\\ukumarsi\\OneDrive - Capgemini\\Desktop\\OnDemand\\OnDemandCarWash\\Backend\\ApiGateway\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ukumarsi\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -74,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.402/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

@@ -59,7 +59,7 @@ namespace CustomerService.Services.Interfaces
         public async Task<Customer?> LoginAsync(LoginCustomerDto dto)
         {
             var customer =
-                await _repository.GetByEmailAsync(dto.Email);
+                await _repository.GetByEmailAsync(dto.Email.Trim());
 
             if (customer == null)
                 return null;
@@ -87,8 +87,12 @@ namespace CustomerService.Services.Interfaces
             if (customer == null)
                 throw new Exception("Customer not found");
 
+            var existingEmailOwner = await _repository.GetByEmailAsync(dto.Email.Trim());
+            if (existingEmailOwner != null && existingEmailOwner.CustomerId != id)
+                throw new ArgumentException("Email is already registered");
+
             customer.Name = dto.Name;
-            customer.Email = dto.Email;
+            customer.Email = dto.Email.Trim();
             customer.Phone = dto.Phone;
             customer.Address = dto.Address;
             customer.UpdatedAt = DateTime.UtcNow;

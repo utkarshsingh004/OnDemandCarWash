@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text.Encodings.Web;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.Extensions.Options;
@@ -18,230 +20,95 @@ namespace NotificationService.Services
             string toEmail,
             string customerName,
             string bookingId,
-            string carName,
-            string registrationNumber,
             string serviceType,
             decimal amount)
         {
+            ValidateSettings();
+
+            var encodedCustomerName = HtmlEncoder.Default.Encode(customerName);
+            var encodedBookingId = HtmlEncoder.Default.Encode(bookingId);
+            var encodedServiceType = HtmlEncoder.Default.Encode(serviceType);
+            var formattedAmount = amount.ToString("N2", CultureInfo.InvariantCulture);
             var email = new MimeMessage();
 
-            email.From.Add(
-                new MailboxAddress(
-                    _settings.SenderName,
-                    _settings.SenderEmail));
-
+            email.From.Add(new MailboxAddress(
+                _settings.SenderName,
+                _settings.SenderEmail));
             email.To.Add(MailboxAddress.Parse(toEmail));
-
-            email.Subject = "Green Car Wash - Car Wash Completed";
-
-            // HTML Email
-            var htmlBody = $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 20px;
-        }}
-
-        .container {{
-            max-width: 650px;
-            margin: auto;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }}
-
-        .header {{
-            background-color: #198754;
-            color: white;
-            text-align: center;
-            padding: 25px;
-        }}
-
-        .header h1 {{
-            margin: 0;
-            font-size: 30px;
-        }}
-
-        .content {{
-            padding: 30px;
-        }}
-
-        .success {{
-            background-color: #e8f7ee;
-            color: #198754;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-        }}
-
-        .details {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }}
-
-        .details td {{
-            padding: 12px;
-            border-bottom: 1px solid #eeeeee;
-        }}
-
-        .details td:first-child {{
-            font-weight: bold;
-            color: #555;
-        }}
-
-        .invoice {{
-            margin-top: 25px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-        }}
-
-        .invoice h2 {{
-            margin-top: 0;
-        }}
-
-        .total {{
-            font-size: 22px;
-            font-weight: bold;
-            text-align: right;
-            margin-top: 20px;
-        }}
-
-        .footer {{
-            background-color: #f8f9fa;
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            font-size: 13px;
-        }}
-    </style>
-</head>
-
-<body>
-
-<div class='container'>
-
-    <div class='header'>
-        <h1>Green Car Wash</h1>
-        <p>Professional Car Care Service</p>
-    </div>
-
-    <div class='content'>
-
-        <h2>Hello Utkarsh Kumar Singh </h2>
-
-        <div class='success'>
-            ✓ Your Car Wash Has Been Completed Successfully!
-        </div>
-
-        <p>
-            Thank you for choosing <b>Green Car Wash</b>.
-            Your vehicle has been successfully washed and is ready.
-        </p>
-
-        <h3>Booking Details</h3>
-
-        <table class='details'>
-
-            <tr>
-                <td>Booking ID</td>
-                <td> 5C8C8F7F-C9CC-43D1-8DAF-16355BA846E0 </td>
-            </tr>
-
-            <tr>
-                <td>Car</td>
-                <td> BMW </td>
-            </tr>
-
-            <tr>
-                <td>Registration Number</td>
-                <td> 1111 </td>
-            </tr>
-
-            <tr>
-                <td>Service</td>
-                <td> Premium </td>
-            </tr>
-
-        </table>
-
-        <div class='invoice'>
-
-            <h2>🧾 Invoice</h2>
-
-            <table class='details'>
-
-                <tr>
-                    <td>Service</td>
-                    <td> Premium </td>
-                </tr>
-
-                <tr>
-                    <td>Amount</td>
-                    <td>₹{799:N2}</td>
-                </tr>
-
-            </table>
-
-            <div class='total'>
-                Amount Due: ₹{799:N2}
-            </div>
-
-        </div>
-
-        <p style='margin-top:25px;'>
-            Please complete the payment of
-            <b>₹{799:N2}</b>.
-        </p>
-
-        <p>
-            Thank you for using <b>Green Car Wash</b>.
-            We look forward to serving you again!
-        </p>
-
-    </div>
-
-    <div class='footer'>
-        <p><b>Green Car Wash</b></p>
-        <p>Thank you for choosing us 🚗</p>
-        <p>This is an automatically generated email.</p>
-    </div>
-
-</div>
-
-</body>
-</html>";
-
+            email.Subject = $"Green Car Wash - Booking {bookingId} accepted";
             email.Body = new TextPart("html")
             {
-                Text = htmlBody
+                Text = $$"""
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            body { font-family: Arial, sans-serif; background: #f4f6f8; padding: 20px; }
+                            .container { max-width: 600px; margin: auto; background: #fff; border-radius: 10px; overflow: hidden; }
+                            .header { background: #198754; color: #fff; text-align: center; padding: 24px; }
+                            .content { padding: 28px; }
+                            .details { width: 100%; border-collapse: collapse; }
+                            .details td { padding: 12px; border-bottom: 1px solid #eee; }
+                            .details td:first-child { font-weight: bold; color: #555; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header"><h1>Green Car Wash</h1></div>
+                            <div class="content">
+                                <h2>Hello {{encodedCustomerName}},</h2>
+                                <p>Your wash request has been accepted. We look forward to seeing you.</p>
+                                <table class="details">
+                                    <tr><td>Booking ID</td><td>{{encodedBookingId}}</td></tr>
+                                    <tr><td>Service</td><td>{{encodedServiceType}}</td></tr>
+                                    <tr><td>Amount</td><td>₹{{formattedAmount}}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                    """
             };
 
             using var smtp = new SmtpClient();
-
+            smtp.Timeout = 15000;
+            var secureSocketOptions = _settings.Port == 465
+                ? MailKit.Security.SecureSocketOptions.SslOnConnect
+                : MailKit.Security.SecureSocketOptions.StartTls;
             await smtp.ConnectAsync(
                 _settings.SmtpServer,
                 _settings.Port,
-                MailKit.Security.SecureSocketOptions.StartTls);
-
+                secureSocketOptions);
             await smtp.AuthenticateAsync(
                 _settings.Username,
                 _settings.Password);
-
             await smtp.SendAsync(email);
-
             await smtp.DisconnectAsync(true);
+        }
+
+        private void ValidateSettings()
+        {
+            var missingSettings = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(_settings.SmtpServer))
+                missingSettings.Add("EmailSettings:SmtpServer");
+            if (_settings.Port <= 0)
+                missingSettings.Add("EmailSettings:Port");
+            if (string.IsNullOrWhiteSpace(_settings.SenderName))
+                missingSettings.Add("EmailSettings:SenderName");
+            if (string.IsNullOrWhiteSpace(_settings.SenderEmail))
+                missingSettings.Add("EmailSettings:SenderEmail");
+            if (string.IsNullOrWhiteSpace(_settings.Username))
+                missingSettings.Add("EmailSettings:Username");
+            if (string.IsNullOrWhiteSpace(_settings.Password))
+                missingSettings.Add("EmailSettings:Password");
+
+            if (missingSettings.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    $"Email configuration is incomplete. Set: {string.Join(", ", missingSettings)}.");
+            }
         }
     }
 }

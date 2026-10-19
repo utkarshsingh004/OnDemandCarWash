@@ -11,6 +11,7 @@ import { Dashboard as WasherDashboard }
 
 import { Dashboard as AdminDashboard }
   from './admin/dashboard/dashboard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
 
@@ -32,17 +33,23 @@ export const routes: Routes = [
 
   {
     path: 'customer',
-    component: CustomerDashboard
+    component: CustomerDashboard,
+    canActivate: [roleGuard],
+    data: { role: 'Customer' }
   },
 
   {
     path: 'washer',
-    component: WasherDashboard
+    component: WasherDashboard,
+    canActivate: [roleGuard],
+    data: { role: 'Washer' }
   },
 
   {
     path: 'admin',
-    component: AdminDashboard
+    component: AdminDashboard,
+    canActivate: [roleGuard],
+    data: { role: 'Admin' }
   }
 
 ];

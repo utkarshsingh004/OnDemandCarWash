@@ -1,95 +1,51 @@
-<div class="login-container">
+<main class="auth-page">
+  <section class="auth-intro">
+    <a class="wordmark" routerLink="/login"><span class="brand-mark">G</span> GreenWash</a>
+    <div class="intro-copy">
+      <p class="eyebrow">A cleaner kind of convenience</p>
+      <h1>Good care for<br>the road ahead.</h1>
+      <p>Car care that comes to you, so your day keeps moving.</p>
+    </div>
+    <p class="intro-foot">On-demand car care, thoughtfully delivered.</p>
+  </section>
 
-  <div class="login-card">
+  <section class="auth-form-panel">
+    <div class="auth-form-wrap">
+      <p class="eyebrow">Welcome back</p>
+      <h2>Sign in to GreenWash</h2>
+      <p class="form-lede">Use your account details to continue.</p>
 
-    <h1>Green Car Wash</h1>
-
-    <p class="subtitle">
-      Login to your account
-    </p>
-
-    <form (ngSubmit)="login()">
-
-      <div class="form-group">
-
-        <label>Email</label>
-
-        <input
-          type="email"
-          name="email"
-          [(ngModel)]="email"
-          placeholder="Enter your email"
-          required
-        />
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Password</label>
-
-        <input
-          type="password"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Enter your password"
-          required
-        />
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Login As</label>
-
-        <select
-          name="role"
-          [(ngModel)]="role"
-        >
-
-          <option value="Customer">
+      <form (ngSubmit)="login()">
+        <fieldset class="role-switch">
+          <legend>Continue as</legend>
+          <label [class.selected]="role === 'Customer'">
+            <input type="radio" name="role" value="Customer" [(ngModel)]="role">
             Customer
-          </option>
-
-          <option value="Washer">
+          </label>
+          <label [class.selected]="role === 'Washer'">
+            <input type="radio" name="role" value="Washer" [(ngModel)]="role">
             Washer
-          </option>
-
-          <option value="Admin">
+          </label>
+          <label [class.selected]="role === 'Admin'">
+            <input type="radio" name="role" value="Admin" [(ngModel)]="role">
             Admin
-          </option>
+          </label>
+        </fieldset>
 
-        </select>
+        <label class="field">Email address
+          <input type="email" name="email" [(ngModel)]="email" autocomplete="email" required>
+        </label>
+        <label class="field">Password
+          <input type="password" name="password" [(ngModel)]="password" autocomplete="current-password" required>
+        </label>
 
-      </div>
+        @if (errorMessage) { <p class="form-feedback error" role="alert">{{ errorMessage }}</p> }
+        <button class="primary-button" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Signing in...' : 'Sign in' }} <span aria-hidden="true">→</span>
+        </button>
+      </form>
 
-      @if (errorMessage) {
-        <div class="error-message">
-          {{ errorMessage }}
-        </div>
-      }
-
-      <button
-        type="submit"
-        [disabled]="isLoading"
-      >
-
-        {{ isLoading ? 'Logging in...' : 'Login' }}
-
-      </button>
-
-    </form>
-
-    <p class="register-text">
-
-      Don't have an account?
-
-      <a routerLink="/register">
-        Register
-      </a>
-
-    </p>
-
-  </div>
-
-</div>
+      <p class="auth-switch">New to GreenWash? <a routerLink="/register">Create an account</a></p>
+    </div>
+  </section>
+</main>

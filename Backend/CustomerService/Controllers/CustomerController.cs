@@ -48,12 +48,79 @@ namespace CustomerService.Controllers
 
         // GET: api/Customer/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> GetCustomer(Guid id)
         {
+            if (!User.IsInRole("Admin") && id != GetCustomerIdFromToken())
+                return Forbid();
+
             var customer = await _customerService.GetByIdAsync(id);
 
-            return Ok(customer);
+            if (customer == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                customer.CustomerId,
+                customer.Name,
+                customer.Email,
+                customer.Phone,
+                customer.Address
+            });
+        }
+
+        [HttpGet("profile")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var customer = await _customerService.GetByIdAsync(GetCustomerIdFromToken());
+            if (customer == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                customer.CustomerId,
+                customer.Name,
+                customer.Email,
+                customer.Phone,
+                customer.Address
+            });
+        }
+
+        [HttpPut("profile")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateProfile(UpdateCustomerDto dto)
+        {
+            await _customerService.UpdateAsync(GetCustomerIdFromToken(), dto);
+            return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("internal/{id}/notification-details")]
+        public async Task<IActionResult> GetNotificationDetails(
+            Guid id,
+            [FromHeader(Name = "X-Internal-Api-Key")] string? apiKey)
+        {
+            var expectedApiKey = _configuration["InternalApiKey"];
+
+            if (string.IsNullOrWhiteSpace(expectedApiKey) ||
+                !string.Equals(apiKey, expectedApiKey, StringComparison.Ordinal))
+            {
+                return Unauthorized();
+            }
+
+            var customer = await _customerService.GetByIdAsync(id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                customer.Name,
+                customer.Email
+            });
         }
 
         // POST: api/Customer/register
@@ -93,10 +160,14 @@ namespace CustomerService.Controllers
 
         // PUT: api/Customer/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Customer")]
         public async Task<IActionResult> UpdateCustomer(
             Guid id,
             UpdateCustomerDto dto)
         {
+            if (!User.IsInRole("Admin") && id != GetCustomerIdFromToken())
+                return Forbid();
+
             await _customerService.UpdateAsync(id, dto);
 
             return Ok(new

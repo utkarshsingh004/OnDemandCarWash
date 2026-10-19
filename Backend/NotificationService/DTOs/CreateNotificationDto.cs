@@ -11,13 +11,15 @@ namespace NotificationService.DTOs
         public Guid BookingId { get; set; }
 
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-
-        [Required]
         public string Message { get; set; } = string.Empty;
 
         [Required]
         public string Type { get; set; } = string.Empty;
+
+        [Required]
+        public string ServiceType { get; set; } = string.Empty;
+
+        [Range(0, double.MaxValue)]
+        public decimal Amount { get; set; }
     }
 }

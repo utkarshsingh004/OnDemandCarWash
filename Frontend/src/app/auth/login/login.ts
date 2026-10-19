@@ -25,10 +25,9 @@ export class Login {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   login() {
-
     this.errorMessage = '';
     this.isLoading = true;
 
@@ -62,9 +61,6 @@ export class Login {
     loginRequest.subscribe({
 
       next: (response) => {
-
-        console.log('Login successful');
-
         localStorage.setItem(
           'token',
           response.token
@@ -90,9 +86,6 @@ export class Login {
       },
 
       error: (error) => {
-
-        console.error(error);
-
         this.errorMessage =
           error.error?.detail ||
           error.error?.message ||

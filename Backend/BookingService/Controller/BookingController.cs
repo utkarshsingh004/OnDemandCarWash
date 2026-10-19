@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using BookingService.DTOs;
 using BookingService.Services;
@@ -10,7 +9,7 @@ namespace BookingService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize]
+    [Authorize]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -40,8 +39,8 @@ namespace BookingService.Controllers
             return Guid.Parse(washerId!);
         }
 
-        // GET: api/Booking
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             var bookings =
@@ -50,7 +49,6 @@ namespace BookingService.Controllers
             return Ok(bookings);
         }
 
-        // GET: api/Booking/my-bookings
         [HttpGet("my-bookings")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMyBookings()
@@ -65,6 +63,15 @@ namespace BookingService.Controllers
             return Ok(bookings);
         }
 
+        [HttpGet("my-assignments")]
+        [Authorize(Roles = "Washer")]
+        public async Task<IActionResult> GetMyAssignments()
+        {
+            var washerId = GetWasherIdFromToken();
+            var bookings = await _bookingService.GetByWasherIdAsync(washerId);
+            return Ok(bookings);
+        }
+
         [HttpGet("my-cars")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMyCars()
@@ -74,7 +81,6 @@ namespace BookingService.Controllers
             return Ok(cars);
         }
 
-        // GET: api/Booking/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -84,10 +90,18 @@ namespace BookingService.Controllers
             if (booking == null)
                 return NotFound("Booking not found");
 
+            if (!User.IsInRole("Admin") &&
+                !(User.IsInRole("Customer") &&
+                  booking.CustomerId == GetCustomerIdFromToken()) &&
+                !(User.IsInRole("Washer") &&
+                  booking.WasherId == GetWasherIdFromToken()))
+            {
+                return NotFound("Booking not found");
+            }
+
             return Ok(booking);
         }
 
-        // POST: api/Booking
         [HttpPost]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(
@@ -103,15 +117,17 @@ namespace BookingService.Controllers
                         customerId,
                         dto);
 
-                return Ok(booking);
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = booking.BookingId },
+                    booking);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (IsExpectedBookingError(ex))
             {
-                return BadRequest(ex.Message);
+                return MapBookingError(ex);
             }
         }
 
-        // PUT: api/Booking/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Update(
@@ -131,9 +147,9 @@ namespace BookingService.Controllers
                 return Ok(
                     "Booking updated successfully");
             }
-            catch (Exception ex)
+            catch (Exception ex) when (IsExpectedBookingError(ex))
             {
-                return BadRequest(ex.Message);
+                return MapBookingError(ex);
             }
         }
 
@@ -167,13 +183,51 @@ namespace BookingService.Controllers
 
                 return Ok("Booking rejected successfully");
             }
-            catch (Exception ex)
+            catch (Exception ex) when (IsExpectedBookingError(ex))
             {
-                return BadRequest(ex.Message);
+                return MapBookingError(ex);
             }
         }
 
-        // DELETE: api/Booking/{id}
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Washer")]
+        public async Task<IActionResult> UpdateStatus(
+            Guid id,
+            UpdateBookingStatusDto dto)
+        {
+            try
+            {
+                await _bookingService.UpdateStatusAsync(
+                    id,
+                    GetWasherIdFromToken(),
+                    dto.Status);
+
+                return NoContent();
+            }
+            catch (Exception ex) when (IsExpectedBookingError(ex))
+            {
+                return MapBookingError(ex);
+            }
+        }
+
+        [HttpPost("{id}/notification/retry")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> ResendAcceptedNotification(Guid id)
+        {
+            try
+            {
+                var delivery =
+                    await _bookingService.ResendAcceptedNotificationAsync(
+                        id,
+                        GetCustomerIdFromToken());
+                return Ok(delivery);
+            }
+            catch (Exception ex) when (IsExpectedBookingError(ex))
+            {
+                return MapBookingError(ex);
+            }
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Delete(Guid id)
@@ -183,17 +237,33 @@ namespace BookingService.Controllers
                 var customerId =
                     GetCustomerIdFromToken();
 
-                await _bookingService.DeleteAsync(
+                await _bookingService.CancelAsync(
                     id,
                     customerId);
 
-                return Ok(
-                    "Booking deleted successfully");
+                return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (IsExpectedBookingError(ex))
             {
-                return BadRequest(ex.Message);
+                return MapBookingError(ex);
             }
         }
+
+        private static bool IsExpectedBookingError(Exception exception) =>
+            exception is KeyNotFoundException or
+                UnauthorizedAccessException or
+                InvalidOperationException or
+                ArgumentException;
+
+        private IActionResult MapBookingError(Exception exception) =>
+            exception switch
+            {
+                KeyNotFoundException => NotFound(exception.Message),
+                UnauthorizedAccessException =>
+                    StatusCode(StatusCodes.Status403Forbidden, exception.Message),
+                InvalidOperationException => Conflict(exception.Message),
+                ArgumentException => BadRequest(exception.Message),
+                _ => throw exception
+            };
     }
 }

@@ -1,1 +1,59 @@
-<p>register works!</p>
+<main class="auth-page">
+	<section class="auth-intro">
+		<a class="wordmark" routerLink="/login"><span class="brand-mark">G</span> GreenWash</a>
+		<div class="intro-copy">
+			<p class="eyebrow">A cleaner kind of convenience</p>
+			<h1>Good care for<br>the road ahead.</h1>
+			<p>Book trusted car care at your door, on your schedule.</p>
+		</div>
+		<p class="intro-foot">On-demand car care, thoughtfully delivered.</p>
+	</section>
+
+	<section class="auth-form-panel">
+		<div class="auth-form-wrap">
+			<p class="eyebrow">Create your account</p>
+			<h2>Join GreenWash</h2>
+			<p class="form-lede">Set up your profile to get started.</p>
+
+			<form (ngSubmit)="register()">
+				<fieldset class="role-switch">
+					<legend>Account type</legend>
+					<label [class.selected]="role === 'Customer'">
+						<input type="radio" name="role" value="Customer" [(ngModel)]="role">
+						Customer
+					</label>
+					<label [class.selected]="role === 'Washer'">
+						<input type="radio" name="role" value="Washer" [(ngModel)]="role">
+						Washer
+					</label>
+				</fieldset>
+
+				<div class="field-grid">
+					<label class="field full-field">Full name
+						<input name="name" [(ngModel)]="name" autocomplete="name" required minlength="2" maxlength="50">
+					</label>
+					<label class="field">Email address
+						<input type="email" name="email" [(ngModel)]="email" autocomplete="email" required>
+					</label>
+					<label class="field">Phone number
+						<input type="tel" name="phone" [(ngModel)]="phone" autocomplete="tel" required>
+					</label>
+					<label class="field full-field">Address
+						<input name="address" [(ngModel)]="address" autocomplete="street-address" required maxlength="200">
+					</label>
+					<label class="field full-field">Password
+						<input type="password" name="password" [(ngModel)]="password" autocomplete="new-password" required minlength="6">
+					</label>
+				</div>
+
+				@if (errorMessage) { <p class="form-feedback error" role="alert">{{ errorMessage }}</p> }
+				@if (successMessage) { <p class="form-feedback success" role="status">{{ successMessage }}</p> }
+				<button class="primary-button" type="submit" [disabled]="isLoading">
+					{{ isLoading ? 'Creating account...' : 'Create account' }} <span aria-hidden="true">↗</span>
+				</button>
+			</form>
+
+			<p class="auth-switch">Already have an account? <a routerLink="/login">Sign in</a></p>
+		</div>
+	</section>
+</main>

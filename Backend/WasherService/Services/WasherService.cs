@@ -26,6 +26,11 @@ namespace WasherService.Services
             return await _repository.GetByIdAsync(id);
         }
 
+        public async Task<Washer?> GetByEmailAsync(string email)
+        {
+            return await _repository.GetByEmailAsync(email);
+        }
+
         public async Task<Washer> RegisterAsync(RegisterWasherDto dto)
         {
             var existingWasher =
@@ -95,6 +100,28 @@ namespace WasherService.Services
             washer.Address = dto.Address;
             washer.IsAvailable = dto.IsAvailable;
             washer.Priority = dto.Priority;
+            washer.UpdatedAt = DateTime.UtcNow;
+
+            await _repository.UpdateAsync(washer);
+        }
+
+        public async Task UpdateProfileAsync(
+            Guid id,
+            UpdateWasherProfileDto dto)
+        {
+            var washer = await _repository.GetByIdAsync(id);
+            if (washer == null)
+                throw new KeyNotFoundException("Washer not found");
+
+            var existingEmailOwner =
+                await _repository.GetByEmailAsync(dto.Email.Trim());
+            if (existingEmailOwner != null && existingEmailOwner.WasherId != id)
+                throw new ArgumentException("Email is already registered");
+
+            washer.Name = dto.Name.Trim();
+            washer.Email = dto.Email.Trim();
+            washer.Phone = dto.Phone.Trim();
+            washer.Address = dto.Address.Trim();
             washer.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(washer);

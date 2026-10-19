@@ -20,10 +20,10 @@ namespace NotificationService.Controllers
         public async Task<IActionResult> Create(
             CreateNotificationDto dto)
         {
-            var notification =
+            var result =
                 await _notificationService.CreateAsync(dto);
 
-            return Ok(notification);
+            return Ok(result);
         }
 
         [HttpGet("customer/{customerId}")]
